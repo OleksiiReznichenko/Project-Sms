@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" style="background-color: #000;">
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="keywords"
+    content="SMS marketing, SMS advertising, Bulk SMS, SMS campaigns, Text message marketing, SMS platform, SMS software, Mobile messaging, SMS messaging, SMS services, SMS API, SMS gateway, SMS tools, SMS automation, SMS integration, SMS broadcast, SMS delivery, SMS tracking, SMS analytics, SMS customer support" />
+
+  <title>Quick SMS</title>
+  <meta name="description" content="QuickSMS.io offers non-VOIP number rental for secure access to various services. These numbers can be used for account verification, two-factor authentication (2FA), and receiving SMS messages while keeping your personal information private. The service supports a selection of local and international numbers, with payment depending on the rental duration or the number of messages received. This helps users maintain privacy and security when using online services and signing up for new platforms. 
+">
+
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://QuickSMS.io/">
+  <meta property="og:title" content="Quick SMS">
+  <meta property="og:description" content="QuickSMS.io offers non-VOIP number rental for secure access to various services. These numbers can be used for account verification, two-factor authentication (2FA), and receiving SMS messages while keeping your personal information private. The service supports a selection of local and international numbers, with payment depending on the rental duration or the number of messages received. This helps users maintain privacy and security when using online services and signing up for new platforms. 
+">
+  <meta property="og:image" content="https://quicksms.io/SEO.png">
+
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:title" content="Quick SMS">
+  <meta property="twitter:description" content="QuickSMS.io offers non-VOIP number rental for secure access to various services. These numbers can be used for account verification, two-factor authentication (2FA), and receiving SMS messages while keeping your personal information private. The service supports a selection of local and international numbers, with payment depending on the rental duration or the number of messages received. This helps users maintain privacy and security when using online services and signing up for new platforms. 
+">
+  <meta property="twitter:image" content="https://quicksms.io/SEO.png">
+  
+  <link rel="preload" href="/fonts/PureHeart-Regular.woff" as="font" type="font/woff" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <script src="/SmoothScroll.min.js"></script>
+  <script src="/librariesInit.js"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-RR33GS0MNW"></script>
+  <script src="//www.google.com/recaptcha/api.js?render=RECAPTCHA_KEY"></script>
+  <link rel="stylesheet" href="/css/base.css">
+  <style>
+    .preloader-1 {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      z-index: 1000;
+      background-color: #000;
+    }
+
+    /* .preloader-1 .title {
+          font-family: PureHeart;
+          font-weight: 400;
+          font-size: 39rem;
+          user-select: none;
+          color: var(--color-green-light);
+      }
+      @media only screen and (max-width: 850px) {
+        .preloader-1 .title {
+            font-size: 29rem;
+        }
+      }
+      @media only screen and (max-width: 400px) {
+        .preloader-1 .title {
+            font-size: 25rem;
+        }
+      } */
+
+    .preloader-1 .face {
+      width: 20vw;
+      height: 20vw;
+      background-color: var(--color-green-light);
+      border-radius: 15vw;
+      position: relative;
+      overflow: hidden;
+      animation: rotation 6.25s linear forwards;
+    }
+
+    @keyframes rotation {
+      0% {
+        transform: translateY(50vh) scale(.4);
+      }
+
+      70% {
+        opacity: 0;
+      }
+
+      100% {
+        transform: translateY(0vh) scale(1);
+        opacity: 0;
+      }
+    }
+
+    .preloader-1 .eye {
+      position: absolute;
+      background-color: #0f0f0f;
+      top: 4.5vw;
+      height: 3.6vw;
+      border-radius: 3vw;
+    }
+
+    .preloader-1 .eye-1 {
+      width: 6.4vw;
+      left: 3.5vw;
+    }
+
+    .preloader-1 .eye-2 {
+      width: 5.7vw;
+      right: 3.5vw;
+    }
+
+    @media only screen and (max-width: 1400px) {
+      .preloader-1 .face {
+        width: 330px;
+        height: 330px;
+        border-radius: 190px;
+      }
+
+      .preloader-1 .eye {
+        top: 85px;
+        height: 60px;
+        border-radius: 30px;
+      }
+
+      .preloader-1 .eye-1 {
+        width: 100px;
+        left: 61px;
+      }
+
+      .preloader-1 .eye-2 {
+        width: 90px;
+        right: 61px;
+      }
+    }
+
+    .hidden {
+      position: absolute;
+      top: 0;
+      left: -99999999px;
+      opacity: 0;
+      visibility: hidden;
+    }
+  </style>
+</head>
+
+<body style="background-color: #000;">
+  <div id="app" style="background-color: #000;"></div>
+  <div class="preloader-1">
+    <div class="face">
+      <div class="eye eye-1"></div>
+      <div class="eye eye-2"></div>
+    </div>
+  </div>
+  <div class="hidden">
+    <script async src="https://telegram.org/js/telegram-widget.js?21" data-telegram-login="qwer_smsbot"
+      data-size="medium" data-userpic="false" data-auth-url="https://api.quicksms.io/login">
+    </script>
+  </div>
+  <script type="module" src="/src/main.ts"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+
+    gtag('config', 'G-RR33GS0MNW');
+  </script>
+</body>
+
+</html>
