@@ -1,6 +1,6 @@
 # Quick SMS - Frontend portfolio demo
 
-**Demo:** https://sms-project.pages.dev/
+**Demo:** https://quicksms.oleksiireznichenko.com
 
 An archived Vue 3 + TypeScript SMS-service frontend, restored as an interactive admin-interface demo with fictional data. This project originally integrated REST APIs for account management, dashboard analytics, coupons and transactions. The original API implementation remains in the source for reference.
 
