@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import axios from 'axios';
 import { useAdminPopularProducts } from '@/stores/AdminPanel/adminMostPopularProducts';
 import { useAdminStatistics } from '@/stores/AdminPanel/adminStatistics';
@@ -28,6 +28,14 @@ import { storeToRefs } from 'pinia';
 const userStore = useUserStore();
 const { auth } = storeToRefs(userStore);
 
+const accountName = computed<string>(() => {
+    const currentAuth = auth.value;
+    if (!currentAuth) return '';
+    if ('email' in currentAuth) return currentAuth.email.email;
+    if ('telegram' in currentAuth) return currentAuth.telegram.username || '';
+    return '';
+});
+
 const popularProductsStore = useAdminPopularProducts();
 
 const adminStatistics = useAdminStatistics();
@@ -50,6 +58,8 @@ onMounted(() => {
         // }
         withCredentials: true
     }).then(function (res) {
+      //  console.log(res);
+
         if (res.data.products) {
             popularProductsStore.setPopularProducts(res.data.products);
         }
@@ -88,7 +98,7 @@ onMounted(() => {
                     <span class="emoji">🔥</span> Welcome
                 </h2>
                 <!-- <strong class="email">forexample@gmail.com</strong> -->
-                <strong class="email">{{ auth?.email?.email || auth?.telegram?.username }}</strong>
+                <strong class="email">{{ accountName }}</strong>
                 <nav class="navigation-big desktop">
                 <ul class="list">
                     <li class="item">

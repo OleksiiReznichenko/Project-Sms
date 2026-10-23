@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, watch, type Ref, nextTick, ref } from 'vue';
+import { onMounted, onBeforeUnmount, watch, nextTick, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
 import SuccessPopup from '@/components/Singular/Main/SuccessPopup.vue';
@@ -23,22 +23,44 @@ interface Order {
         expiry: number
     },
     status: string | null,
-    sms: sms[]
+    sms: SmsMessage[]
 }
-
-const orders: Ref<Order[] | []> = ref([]);
-const currentOrder: Ref<Order | null> = ref(null);
 
 // SMS DATA
-interface sms {
-    sms: string,
-    full_sms: string,
-    expiration: number
+interface SmsMessage {
+    sms: string;
+    full_sms: string;
+    expiration: number;
 }
+
+interface SmsPollResult extends Partial<SmsMessage> {
+    message?: string;
+    error?: boolean;
+}
+
+const isNewSms = (result: SmsPollResult | null): result is SmsMessage =>
+    result !== null &&
+    result.error !== true &&
+    result.message !== 'pending' &&
+    typeof result.sms === 'string' &&
+    typeof result.full_sms === 'string' &&
+    typeof result.expiration === 'number';
+
+const orders = ref<Order[]>([]);
+const currentOrder = ref<Order | null>(null);
 
 
 const route = useRoute();
 const router = useRouter();
+
+const getOrderIndex = (): number => {
+    const id = route.params.id;
+    const raw = Array.isArray(id) ? id[0] : id;
+    if (typeof raw !== 'string') return -1;
+
+    const index = Number.parseInt(raw, 10) - 1;
+    return Number.isInteger(index) && index >= 0 ? index : -1;
+};
 
 // LOADER VARIABLE
 const isOrdersLoaded = ref(false);
@@ -97,8 +119,10 @@ onMounted(async () => {
         // }
         withCredentials: true
     }).then(function (res) {
+        console.log(res);
         // SET ORDERS
-        orders.value = res.data.orders.filter(item => item.error !== true);
+        const receivedOrders = (res.data.orders ?? []) as Array<Order & { error?: boolean }>;
+        orders.value = receivedOrders.filter(item => item.error !== true);
 
         // SET LOADER VARIABLE TO TRUE
         isOrdersLoaded.value = true;
@@ -107,21 +131,19 @@ onMounted(async () => {
         if (window.innerWidth > 850) {
             isMobile.value = false;
 
-            // IF ORDER IS CHOSEN SET CURRENT ORDER 
-            if (route.params.id) {
-                currentOrder.value = orders.value[parseInt(route.params.id[0]) - 1];
-                return;
+            // Select the requested order, or the first one if none was specified.
+            const orderIndex = getOrderIndex();
+            currentOrder.value = orders.value[orderIndex >= 0 ? orderIndex : 0] ?? null;
+            if (orderIndex < 0 && orders.value.length > 0) {
+                router.push('/main/orders/1');
             }
-
-            // IF ORDERS ISN`T CHOSEN SET FIRST ORDER AS CHOOSEN
-            if (orders.value.length > 0) router.push(`/main/orders/1`);
-            currentOrder.value = orders.value[parseInt(route.params.id[0]) - 1];
         } else {
             isMobile.value = true;
 
             // SET CHOSEN CHAT ON MOBILE
-            route.params.id ? showChat.value = parseInt(route.params.id as string) || 0 : showChat.value = 0;
-            currentOrder.value = orders.value[showChat.value - 1];
+            const orderIndex = getOrderIndex();
+            showChat.value = orderIndex + 1;
+            currentOrder.value = orderIndex >= 0 ? orders.value[orderIndex] ?? null : null;
         }
     }).catch(function (err) {
         console.log(err);
@@ -131,95 +153,81 @@ onMounted(async () => {
     startCountdown(onTick);
 });
 
-const interval = ref();
+const interval = ref<ReturnType<typeof setInterval> | null>(null);
 
-function startCountdown(onTick: (orderId: string) => Promise<void>): () => void {
+function startCountdown(onTick: (orderId: string) => Promise<SmsPollResult | null>): void {
+    if (interval.value !== null) clearInterval(interval.value);
 
     // CHECK FOR NEW SMS EVERY 15 SECONDS
     interval.value = setInterval(async () => {
 
         // IF ORDER ISN`T CHOSEN (ON MOBILE)
         if (!route.fullPath.includes('orders')) {
-            clearInterval(interval.value);
+            if (interval.value !== null) clearInterval(interval.value);
             return;
         }
 
         // CLEAR INTERVAL IF ORDER IS EXPIRED
         if (currentTime.value === 0 || currentOrder.value?.status === "This order has been refunded" || currentOrder.value?.status === "This order is expired") {
-            clearInterval(interval.value);
+            if (interval.value !== null) clearInterval(interval.value);
             return;
         }
 
         // GET ORDER ID
-        const orderLocalId = parseInt(route.params.id as string) - 1;
+        const orderLocalId = getOrderIndex();
+        const order = orders.value[orderLocalId];
 
-        if (orderLocalId !== null && orderLocalId !== undefined) {
-            // GET ORDER ID
-            const orderId = orders.value[orderLocalId].data.order_id;
+        if (order) {
+            const orderId = order.data.order_id;
 
             // HANDLE GET NEW SMS
-            let newSms;
+            let newSms: SmsPollResult | null = null;
 
             try {
                 newSms = await onTick(orderId);
             } catch (error) {
-                console.error(error.message);
+                console.error(error);
                 newSms = null;
             }
 
-            // IF NEW SMS RECIVED
-            if (newSms !== null && newSms !== undefined && newSms.message !== "pending" && newSms.error !== true) {
-
-                // ADD NEW SMS
-                if (orders.value[orderLocalId]) {
-                    orders.value[orderLocalId].sms.push(newSms);
-                }
+            // Only complete, validated SMS responses enter the chat.
+            if (isNewSms(newSms)) {
+                order.sms.push(newSms);
 
                 // HANDLE SCROLL CHAT TO THE END
                 setTimeout(() => {
-                    if (scrollEl.value && orderLocalId === parseInt(route.params.id as string) - 1) scrollEl.value.scrollTop = scrollEl.value.scrollHeight;
+                    if (scrollEl.value && orderLocalId === getOrderIndex()) scrollEl.value.scrollTop = scrollEl.value.scrollHeight;
                 }, 0);
             }
         }
     }, 15000);
 
-    return () => clearInterval(interval.value);
 }
 
-// GET NEW SMS HANDLER
-async function onTick(orderId: string): Promise<void> {
-    try {
-        // HANDLE GET NEW SMS
-        const response = await axios({
-            method: "get",
-            url: `${import.meta.env.VITE_API_BASE_URL}/getSms?order=${orderId}`,
-            // headers: {
-            //     "Authorization": `Bearer ${import.meta.env.VITE_TOKEN}`,
-            // },
-            withCredentials: true
-        });
+onBeforeUnmount(() => {
+    if (interval.value !== null) clearInterval(interval.value);
+});
 
-        // IF ISN`T ERROR SET SMS
-        if (response.error !== true) {
-            return response.data;
-        }
-        throw new Error('Error in response data');
-    } catch (err) {
-        console.log(err);
-        throw new Error('Error fetching SMS data');
-    }
+// GET NEW SMS HANDLER
+async function onTick(orderId: string): Promise<SmsPollResult | null> {
+    const response = await axios.get<SmsPollResult>(
+        `${import.meta.env.VITE_API_BASE_URL}/getSms?order=${orderId}`,
+        { withCredentials: true }
+    );
+
+    return response.data?.error === true ? null : response.data ?? null;
 }
 
 // HANDLE ON CHANGE CHAT
-watch(route, (newValue) => {
+watch(() => route.params.id, () => {
     // IF DEVICE IS MOBILE
-    if (isMobile) {
+    if (isMobile.value) {
 
         // SET CURRENT NUMBER TIME TO 0
         currentTime.value = 0;
 
         // SET CHOSEN CHAT ID
-        route.params.id ? showChat.value = parseInt(route.params.id as string) || 0 : showChat.value = 0;
+        showChat.value = getOrderIndex() + 1;
         if (showChat.value === 0) return;
 
         // SET LOADER VARIABLE TO TRUE
@@ -230,7 +238,9 @@ watch(route, (newValue) => {
     }
 
     // SET CHOSEN CHAT ID
-    currentOrder.value = orders.value[parseInt(route.params.id as string) - 1];
+    const orderLocalId = getOrderIndex();
+    currentOrder.value = orders.value[orderLocalId] ?? null;
+    if (!currentOrder.value) return;
 
     // HANDLE SCROLL CHAT TO THE END
     setTimeout(() => {
@@ -238,8 +248,7 @@ watch(route, (newValue) => {
     }, 0);
 
     // GET ORDER ID
-    const orderLocalId = parseInt(route.params.id as string) - 1;
-    const orderId = orders.value[orderLocalId].data.order_id;
+    const orderId = currentOrder.value.data.order_id;
 
     setTimeout(() => {
         // IF NUMBER ISN`T EXPIRED
@@ -254,15 +263,16 @@ watch(route, (newValue) => {
                 // },
                 withCredentials: true
             }).then(function (res) {
-                // IF NEW SMS RECIVED
-                if (res.data !== null && res.data.message !== "pending") {
+                console.log(res);
 
+                // IF NEW SMS RECIVED
+                if (isNewSms(res.data)) {
                     // ADD NEW SMS
-                    orders.value[orderLocalId].sms.push(res.data);
+                    orders.value[orderLocalId]?.sms.push(res.data);
 
                     // HANDLE SCROLL CHAT TO THE END
                     setTimeout(() => {
-                        if (scrollEl.value && orderLocalId === parseInt(route.params.id as string) - 1) scrollEl.value.scrollTop = scrollEl.value.scrollHeight;
+                        if (scrollEl.value && orderLocalId === getOrderIndex()) scrollEl.value.scrollTop = scrollEl.value.scrollHeight;
                     }, 0);
                 }
             }).catch(function (err) {
@@ -271,7 +281,7 @@ watch(route, (newValue) => {
         }
     }, 1000);
 
-    clearInterval(interval.value);
+    if (interval.value !== null) clearInterval(interval.value);
     startCountdown(onTick);
 });
 
@@ -290,10 +300,10 @@ const handleGoBack = () => {
 
 // RESEND CODE HANDLER
 const handleResendCode = () => {
+    if (!currentOrder.value) return;
 
     // GET ORDER ID
-    const orderLocalId = parseInt(route.params.id as string) - 1;
-    const orderId = orders.value[orderLocalId].data.order_id;
+    const orderId = currentOrder.value.data.order_id;
 
     axios({
         method: "get",
@@ -301,6 +311,7 @@ const handleResendCode = () => {
         withCredentials: true
     }).then(function (res) {
         startCountdown(onTick);
+        console.log(res);
     }).catch(function (err) {
         console.log(err);
     });

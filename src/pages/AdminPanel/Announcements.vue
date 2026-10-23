@@ -146,40 +146,30 @@ const closeOnWrapperPopupAdd = (event: Event): void => {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // FILE HANDLING
-let selectedFile = ref<any>(null);
-let bannerSrc = null;
+const selectedFile = ref<File | null>(null);
 
 // FILE READER
 const fileReader = new FileReader();
 
-fileReader.onload = (event: Event) => {
-    const target = event.target as HTMLInputElement;
-
-    if (!target) return;
-    // GET NEW AVATAR SOURCE
-    bannerSrc = target?.result;
-    currentImage.value = bannerSrc;
+fileReader.onload = (): void => {
+    const result = fileReader.result;
+    currentImage.value = typeof result === 'string' ? result : null;
 };
 
 // TRIGGER FILE SELECTION
 const triggerAddFileSelection = (event: Event) => {
     event.preventDefault();
     addImageInput.value?.click();
+    // console.log('CLICK', addImageInput.value)
 };
 
 // // EVENT IF FILE IS SELECTED
-const fileChanged = (event: Event) => {
-    const target = event.target as HTMLInputElement;
+const fileChanged = (event: Event): void => {
+    const target = event.target;
+    if (!(target instanceof HTMLInputElement)) return;
 
-    if (!target) return;
-    const files = target.files || event?.dataTransfer.files;
-    if (files.length) {
-        selectedFile.value = files[0];
-    } else {
-        selectedFile.value = files;
-    }
-
-    if (selectedFile.value?.name) {
+    selectedFile.value = target.files?.[0] ?? null;
+    if (selectedFile.value) {
         fileReader.readAsDataURL(selectedFile.value);
     }
 };
@@ -187,11 +177,10 @@ const fileChanged = (event: Event) => {
 // EVENT IF FILE IS CLEARED
 const fileCleared = () => {
     selectedFile.value = null;
-    bannerSrc = null;
     currentImage.value = null;
-    if (!addImageInput.value) return;
-    addImageInput.value.value = '';
-    addImageInput.value.values = [];
+    if (addImageInput.value) {
+        addImageInput.value.value = '';
+    }
 };
 
 onMounted(() => {

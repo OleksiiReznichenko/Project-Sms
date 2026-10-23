@@ -1,3 +1,5 @@
+import type { Coupon } from '@/interfaces/coupon';
+
 // All demo records are fictional and live in browser memory only.
 const now = Date.now();
 const day = 86_400_000;
@@ -42,7 +44,7 @@ export const demoTransactions = [
         service: { id: 1, name: 'Telegram' } }]
 }));
 
-export const demoCoupons = [
+export const demoCoupons: Coupon[] = [
     { id: 1, name: 'WELCOME10', discount: { type: '%' as const, value: 10 }, limit: 250 },
     { id: 2, name: 'DEMO5', discount: { type: '$' as const, value: 5 }, limit: 100 },
     { id: 3, name: 'SPRING15', discount: { type: '%' as const, value: 15 }, limit: 75 }

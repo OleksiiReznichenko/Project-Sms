@@ -115,7 +115,7 @@ function handle(urlString: string, raw: any): any {
         }
         case 'addCoupon':
             demoCoupons.unshift({ id: ++nextId, name: String(data.name || 'DEMO'),
-                discount: { type: data.discount?.type === '$' ? '$' : '%' as '%' | '$',
+                discount: { type: data.discount?.type === '$' ? '$' : '%',
                     value: Number(data.discount?.value || 0) }, limit: Number(data.limit || 0) });
             return ok;
         case 'editCoupon': {
