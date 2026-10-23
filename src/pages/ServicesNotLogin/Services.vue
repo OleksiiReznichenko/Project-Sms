@@ -9,6 +9,7 @@ import NavMenu from '@/components/Singular/App/NavMenu.vue';
 import NoServicesFound from '@/components/Singular/Main/Services/NoServicesFound.vue';
 import NothingFound from '@/components/Singular/Main/Services/NothingFound.vue';
 import { DEMO_MODE } from '@/demo/config';
+import ServicesDemo from '@/components/Singular/Main/Services/ServicesDemo.vue';
 
 const router = useRouter();
 const route = useRoute();
@@ -46,6 +47,7 @@ const isCountriesLoaded = ref(false);
 const isServicesLoaded = ref(false);
 
 onMounted(() => {
+    if (DEMO_MODE) return;
 
     // HANDLE CLOSE ERROR POPUP
     if (route.params.status === 'cancel') {
@@ -161,6 +163,7 @@ const handleChangeSearchText = (e: Event) => {
 
 // HANDLE CHANGE CHOSEN COUNTRY
 watch(countryFilter, (newValue) => {
+    if (DEMO_MODE) return;
     isServicesLoaded.value = false;
     axios({
         method: "get",
@@ -195,6 +198,7 @@ const isLoading = ref(false);
 
 // INPUT VALUE HANDLER
 watch(searchText, (newValue) => {
+    if (DEMO_MODE) return;
     if (changeSearch) clearTimeout(changeSearch);
     isLoading.value = true;
     changeSearch = setTimeout(() => {
@@ -239,7 +243,8 @@ const registrationRedirect = () => {
     <div class="page services">
         <AppNav />
         <NavMenu />
-        <div class="inner-container">
+        <ServicesDemo v-if="DEMO_MODE" />
+        <div v-else class="inner-container">
             <div :class="!isServicesOpen ? 'open' : ''" class="services__left">
                 <span class="services__left__title-mobile mobile">Choose the<br />country </span>
                 <div class="services__right__search mobile">

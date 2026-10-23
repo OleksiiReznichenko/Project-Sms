@@ -41,8 +41,8 @@ function handle(urlString: string, raw: any): any {
                 { ID: 4, name: 'Germany', region: 'Europe', short_name: 'DE' },
                 { ID: 5, name: 'Norway', region: 'Europe', short_name: 'NO' }
             ] };
-        case 'getServices':
-            return { services: [
+        case 'getServices': {
+            const sampleServices = [
                 { ID: 101, name: 'Google' },
                 { ID: 102, name: 'Discord' },
                 { ID: 103, name: 'Telegram' },
@@ -51,7 +51,18 @@ function handle(urlString: string, raw: any): any {
                 { ID: 106, name: 'WhatsApp' },
                 { ID: 107, name: 'Microsoft' },
                 { ID: 108, name: 'TikTok' }
-            ] };
+            ];
+            const countryId = Number(url.searchParams.get('country') || 1);
+            const byCountry: Record<number, number[]> = {
+                1: [101, 102, 103, 104, 105, 106, 107, 108],
+                2: [101, 102, 103, 104, 105, 106, 107],
+                3: [101, 102, 103, 104, 105, 107],
+                4: [101, 102, 103, 105, 107],
+                5: [101, 102, 103, 105, 106]
+            };
+            const allowedIds = byCountry[countryId] || byCountry[1];
+            return { services: sampleServices.filter(service => allowedIds.includes(service.ID)) };
+        }
         case 'getAccount': return { account: url.searchParams.has('id')
             ? demoUsers.find(u => u.id === id) || null : adminAccount };
         case 'getAccounts': return { accounts: demoUsers };
