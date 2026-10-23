@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { DEMO_MODE } from '@/demo/config';
 const props = defineProps(["additionalLink"]);
 
 </script>
@@ -16,7 +17,8 @@ const props = defineProps(["additionalLink"]);
                 <p class="description">
                     Receive quick automated messages for registration in any service you need
                 </p>
-                <router-link :to="`${props.additionalLink || ''}/services`" class="btn-green button-buy ">Buy a number</router-link>
+                <router-link v-if="DEMO_MODE" to="/adminPanel/main" class="btn-green button-buy ">Explore admin demo</router-link>
+                <router-link v-else :to="`${props.additionalLink || ''}/services`" class="btn-green button-buy ">Buy a number</router-link>
             </div>
             <div class="message message-discord">
                 <img src="@/assets/img/Landing/discord.png" alt="" class="icon">

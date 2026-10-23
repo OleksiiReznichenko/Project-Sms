@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { DEMO_MODE } from '@/demo/config'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -146,3 +147,12 @@ const router = createRouter({
 })
 
 export default router
+
+// Keep all original routes and integrations in source, but restrict public demo navigation.
+if (DEMO_MODE) {
+  router.beforeEach((to) => {
+    if (['/', '/login', '/FAQ', '/services'].includes(to.path) || to.path.startsWith('/adminPanel')) return true;
+    if (to.path === '/registration' || to.path.startsWith('/recover') || to.path === '/login/confirm') return '/login';
+    return '/';
+  });
+}

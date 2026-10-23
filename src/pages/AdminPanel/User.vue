@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { inject, onMounted, ref, watch, watchEffect } from 'vue';
+import { DEMO_MODE } from '@/demo/config';
 import axios from 'axios';
 import type { User } from '@/interfaces/user';
 import { useRoute, useRouter } from 'vue-router';
@@ -67,7 +68,6 @@ const ban = (): void => {
         },
         withCredentials: true
     }).then(function (res) {
-        // console.log('banned', res);
         if (res.data.error) {
             notifyError(res.data.message);
             return;
@@ -97,7 +97,6 @@ const unban = (): void => {
         },
         withCredentials: true
     }).then(function (res) {
-        // console.log('unbanned', res);
         if (res.data.error) {
             notifyError(res.data.message);
             return;
@@ -521,7 +520,7 @@ onMounted(() => {
                         </div>
                         <div class="input-container">
                             <span class="subtitle">Password</span>
-                            <input type="password" class="input" v-model="passwordCopy">
+                            <input type="password" class="input" v-model="passwordCopy" :disabled="DEMO_MODE" :placeholder="DEMO_MODE ? 'Not available in demo' : ''">
                         </div>
                         <button @click="saveInfoChanges" class="btn-green-rounded button-save"
                             :class="{ 'disabled': isButtonDisabled }">Save</button>

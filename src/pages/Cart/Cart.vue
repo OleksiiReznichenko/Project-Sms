@@ -59,7 +59,6 @@ onMounted(() => {
         showAmount.value = true;
         if (user.$state.balance < parseFloat(amount.value)) isBalanceAvailable.value = false;
         else isBalanceAvailable.value = true;
-        console.log(res);
     }).catch(function (err) {
         console.log(err);
     });
@@ -143,8 +142,6 @@ watch(cart.$state, (newValue) => {
             // IS MONEY ON BALANCE ENOGHT
             if (user.$state.balance < parseFloat(amount.value)) isBalanceAvailable.value = false;
             else isBalanceAvailable.value = true;
-
-            console.log(res);
         }).catch(function (err) {
             console.log(err);
         });
@@ -193,8 +190,6 @@ watch(coupon, (newValue) => {
                 },
                 withCredentials: true
             }).then(function (res) {
-                console.log(res);
-
                 // IF COUPON ISN`T FOUND
                 if (res.data.error) {
                     isCouponFound.value = false;
@@ -252,7 +247,6 @@ watch(coupon, (newValue) => {
                     amount.value = res.data.amount;
                     if (user.$state.balance < parseFloat(amount.value)) isBalanceAvailable.value = false;
                     else isBalanceAvailable.value = true;
-                    console.log(res);
                 }).catch(function (err) {
                     console.log(err);
                 });
@@ -287,8 +281,6 @@ const handlePay = () => {
         },
         withCredentials: true
     }).then(function (res) {
-        console.log(res);
-
         // UPDATE ACCOUNT INFORMATION AND REDIRECT TO ORDERS PAGE
         if (payment === "balance") {
             axios({
@@ -299,7 +291,6 @@ const handlePay = () => {
                 // }
                 withCredentials: true
             }).then(function (res) {
-                console.log(res);
                 user.setUser(res.data.account);
                 cart.clearCart();
                 router.push('/main/orders/1/success');

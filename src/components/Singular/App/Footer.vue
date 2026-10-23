@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { DEMO_MODE } from '@/demo/config';
 const props = defineProps(["additionalLink"]);
 
 </script>
@@ -13,9 +14,9 @@ const props = defineProps(["additionalLink"]);
                         <router-link to="/" class="logo-link">
                             <img src="@/assets/svg/logoText.svg" alt="" class="logo">
                         </router-link>
-                        <span class="slogan">High quality SMS verification</span>
+                        <span class="slogan">{{ DEMO_MODE ? "Archived frontend project" : "High quality SMS verification" }}</span>
                     </div>
-                    <div class="socials">
+                    <div v-if="!DEMO_MODE" class="socials">
                         <ul class="list">
                             <li class="item">
                                 <a href="https://discord.com/invite/sms" target="_blank" class="link">
@@ -35,16 +36,16 @@ const props = defineProps(["additionalLink"]);
                 <div class="right">
                     <ul class="nav-list">
                         <li class="item">
-                            <router-link to="/registration" class="link">Profile</router-link>
+                            <router-link :to="DEMO_MODE ? '/adminPanel/main' : '/registration'" class="link">{{ DEMO_MODE ? 'Admin demo' : 'Profile' }}</router-link>
                         </li>
                         <!-- <li class="item">
                             <router-link to="/#" class="link">Support</router-link>
                         </li> -->
                         <li class="item">
-                            <router-link :to="`${props.additionalLink || ''}/FAQ`" class="link">Guideline</router-link>
+                            <router-link :to="DEMO_MODE ? '/FAQ' : `${props.additionalLink || ''}/FAQ`" class="link">{{ DEMO_MODE ? 'FAQ' : 'Guideline' }}</router-link>
                         </li>
                         <li class="item">
-                            <router-link :to="`${props.additionalLink || ''}/services`" class="link">Get a number</router-link>
+                            <router-link :to="DEMO_MODE ? '/services' : `${props.additionalLink || ''}/services`" class="link">{{ DEMO_MODE ? 'Browse services' : 'Get a number' }}</router-link>
                         </li>
                     </ul>
                 </div>
@@ -52,17 +53,17 @@ const props = defineProps(["additionalLink"]);
             <div class="bottom">
                 <div class="item item-1">
                     <div class="item-padding-container">
-                        <span>© QuickSMS, 2023. All rights reserved</span>
+                        <span>{{ DEMO_MODE ? "Quick SMS — historical frontend demo" : "© QuickSMS, 2023. All rights reserved" }}</span>
                     </div>
                 </div>
                 <div class="item item-2">
                     <div class="item-padding-container">
-                        <router-link :to="`${props.additionalLink || ''}/TOS`" class="link">Terms of Service</router-link>
+                        <router-link :to="DEMO_MODE ? '/adminPanel/main' : `${props.additionalLink || ''}/TOS`" class="link">{{ DEMO_MODE ? 'Sample dashboard' : 'Terms of Service' }}</router-link>
                     </div>
                 </div>
                 <div class="item item-3">
                     <div class="item-padding-container">
-                        <a href="https://heavens.pro/" target="_blank" class="heavens-link">
+                        <a v-if="!DEMO_MODE" href="https://heavens.pro/" target="_blank" rel="noopener noreferrer" class="heavens-link">
                             <img src="@/assets/svg/heavensLogoText.svg" alt="" class="heavens-logo">
                         </a>
                     </div>

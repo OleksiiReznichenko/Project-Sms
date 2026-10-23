@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref, watch } from 'vue';
+import { DEMO_MODE } from '@/demo/config';
 import { RouterView, useRoute, useRouter } from 'vue-router';
 import AppNav from '@/components/Singular/App/Nav.vue';
 import NavMenu from '@/components/Singular/App/NavMenu.vue';
@@ -11,6 +12,13 @@ const route = useRoute();
 const router = useRouter();
 
 const appMountedIndicator = ref<boolean>(false);
+
+// DEMO NOTICE
+const showDemoNotice = ref<boolean>(true);
+
+const closeDemoNotice = (): void => {
+  showDemoNotice.value = false;
+};
 
 // IF TOUCHPAD DEVICE'S HEIGHT CHANGES - CHANGE BASE 100VH HEIGHT
 const appHeight = (): void => {
@@ -58,6 +66,22 @@ onUnmounted(() => {
 </script>
 
 <template>
+  <div v-if="DEMO_MODE && showDemoNotice" class="portfolio-demo-notice" role="note">
+    <p class="portfolio-demo-notice__text">
+      <strong>Quick SMS demo</strong> — fictional accounts and transactions. No real SMS or payments.
+    </p>
+    <router-link class="portfolio-demo-notice__link" to="/adminPanel/main">
+      Explore admin →
+    </router-link>
+    <button
+      class="portfolio-demo-notice__close"
+      type="button"
+      aria-label="Close demo notice"
+      @click="closeDemoNotice"
+    >
+      &times;
+    </button>
+  </div>
   <router-view v-slot="{ Component }">
     <Transition name="fade" mode="out-in">
       <component :is="Component" />
@@ -69,6 +93,105 @@ onUnmounted(() => {
 </template>
 
 <style lang="scss">
+.portfolio-demo-notice {
+  position: fixed;
+  bottom: 2rem;
+  left: 2rem;
+  z-index: 99999;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: .6rem;
+
+  width: min(44rem, calc(100vw - 4rem));
+  padding: 1.4rem 4.4rem 1.4rem 1.6rem;
+  border: .1rem solid rgba(255, 255, 255, .18);
+  border-radius: .8rem;
+  background: rgba(24, 24, 29, .96);
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, .25);
+
+  color: #d6d6dc;
+  font-family: inherit;
+  font-size: 1.35rem;
+  line-height: 1.5;
+
+  &__text {
+    margin: 0;
+    font-size: inherit;
+    line-height: inherit;
+    overflow-wrap: anywhere;
+
+    strong {
+      color: #fff;
+      font-weight: 600;
+    }
+  }
+
+  &__link {
+    color: var(--color-green-light);
+    font-size: 1.4rem;
+    font-weight: 600;
+    line-height: 1.4;
+    white-space: normal;
+
+    &:hover {
+      color: var(--color-green-light-2);
+    }
+  }
+
+  &__close {
+    position: absolute;
+    top: .8rem;
+    right: .8rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 2.8rem;
+    height: 2.8rem;
+    border: 0;
+    border-radius: .5rem;
+    background: transparent;
+    color: #a6a6af;
+    font-family: inherit;
+    font-size: 2.2rem;
+    font-weight: 400;
+    line-height: 1;
+    cursor: pointer;
+
+    &:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, .08);
+    }
+
+    &:focus-visible {
+      outline: .2rem solid var(--color-green-light);
+      outline-offset: .2rem;
+    }
+  }
+
+  @media only screen and (max-width: 600px) {
+    bottom: 1.2rem;
+    left: 1.2rem;
+    right: 1.2rem;
+    width: auto;
+    padding: 1.5rem 4.8rem 1.5rem 1.6rem;
+    font-size: 1.7rem;
+
+    &__link {
+      font-size: 1.8rem;
+    }
+
+    &__close {
+      width: 3.6rem;
+      height: 3.6rem;
+      font-size: 2.7rem;
+    }
+  }
+}
+
 .desktop {
   @media only screen and (max-width: 850px) {
     display: none !important;

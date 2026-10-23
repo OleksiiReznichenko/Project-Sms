@@ -12,7 +12,6 @@ const timeout2 = ref<ReturnType<typeof setTimeout>>();
 
 // watch(route, () => {
 //     if (route.name === 'home' || route.name === 'ambassadors' || route.name?.toString().includes('course')) {
-//         // console.log('ROUTE CHANGE')
 //         clearTimeout(timeout1.value);
 //         clearTimeout(timeout2.value);
 //         preloaderTimeline

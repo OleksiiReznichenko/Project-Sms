@@ -8,6 +8,7 @@ import AppNav from '@/components/Singular/App/Nav.vue';
 import NavMenu from '@/components/Singular/App/NavMenu.vue';
 import NoServicesFound from '@/components/Singular/Main/Services/NoServicesFound.vue';
 import NothingFound from '@/components/Singular/Main/Services/NothingFound.vue';
+import { DEMO_MODE } from '@/demo/config';
 
 const router = useRouter();
 const route = useRoute();
@@ -71,7 +72,6 @@ onMounted(() => {
         // }
         withCredentials: true
     }).then(function (res) {
-        console.log(res);
         isCountriesLoaded.value = true;
         countries.value = res.data.countries;
 
@@ -90,7 +90,6 @@ onMounted(() => {
         // }
         withCredentials: true
     }).then(function (res) {
-        console.log(res);
         isServicesLoaded.value = true;
         services.value = res.data.services;
 
@@ -171,7 +170,6 @@ watch(countryFilter, (newValue) => {
         // }
         withCredentials: true
     }).then(function (res) {
-        console.log(res);
         services.value = res.data.services;
         isServicesLoaded.value = true;
         
@@ -228,6 +226,10 @@ const handleOpenErrorPopup = () => {
 
 // HANDLE GO REGISTRATION
 const registrationRedirect = () => {
+    if (DEMO_MODE) {
+        router.push('/adminPanel/main');
+        return;
+    }
     router.push({ name: 'registration' });
 }
 
@@ -278,17 +280,20 @@ const registrationRedirect = () => {
                         </div>
                     </div>
                 </div>
+                <p v-if="DEMO_MODE" class="services__right__demo-notice">
+                    Sample service catalog — browsing only. No numbers or SMS are available.
+                </p>
                 <div class="loader mobile-ver" v-if="!isServicesLoaded || isLoading">
                     <Loader />
                 </div>
                 <div v-else-if="renderServices.length !== 0" class="services__right__box">
                     <button @click="registrationRedirect" class="services__right__box__buy-button">
-                        <span v-if="isAmountLoading" class="services__right__box__buy-button__price">
+                        <span v-if="!DEMO_MODE && isAmountLoading" class="services__right__box__buy-button__price">
                             <LoaderSmall />
                         </span>
-                        <span v-else class="services__right__box__buy-button__price">{{ 0.00
+                        <span v-else-if="!DEMO_MODE" class="services__right__box__buy-button__price">{{ 0.00
                         }}$</span>
-                        <span class="services__right__box__buy-button__text">Buy</span>
+                        <span class="services__right__box__buy-button__text">{{ DEMO_MODE ? 'Admin demo' : 'Buy' }}</span>
                     </button>
                     <div class="services__right__box__scroll">
                         <Service v-for="item in renderServices" :key="item.ID" :name="item.name" :ID="item.ID"
@@ -305,6 +310,13 @@ const registrationRedirect = () => {
 
 <style lang="scss" scoped>
 .services {
+    &__right__demo-notice {
+        padding: 1.2rem 2rem;
+        color: var(--color-grey-2);
+        font-size: 1.4rem;
+        line-height: 1.5;
+    }
+
     height: 100%;
     width: 100%;
 

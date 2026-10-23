@@ -20,7 +20,6 @@ onMounted(() => {
     }).then(function (res) {
         transaction.value = res.data.transactions;
         isTransactionsLoaded.value = true;
-        console.log(res);
     }).catch(function (err) {
         console.log(err);
     });

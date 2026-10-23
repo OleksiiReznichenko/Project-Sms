@@ -78,7 +78,6 @@ watch(serviceCount, (newValue) => {
                     },
                     withCredentials: true
                 }).then(function (res) {
-                    console.log(res);
                     if (res.data.amount < newValue) {
                         notifyError("There is not enough product.");
                         

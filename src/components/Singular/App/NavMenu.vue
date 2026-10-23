@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { DEMO_MODE } from '@/demo/config';
 import { storeToRefs } from 'pinia';
 import { useBaseStore } from '@/stores/index';
 import { useUserStore } from '@/stores/user';
@@ -47,7 +48,7 @@ const handleOpenDepositPopup = () => {
                     <router-link @click="baseStore.closeMobileNavMenu" to="/main/transactions" class="link">Transactions</router-link>
                 </li>
             </ul>
-            <div class="socials">
+            <div v-if="!DEMO_MODE" class="socials">
                 <a href="https://t.me/QuickSMS_Bot" target="_blank" class="social">
                     <img src="@/assets/svg/navMenu/telegram.svg" alt="" class="icon">
                     <span>Telegram</span>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import BurgerMenu from '@/components/Reusable/BurgerMenu.vue';
+import { DEMO_MODE } from '@/demo/config';
 import { useRecaptchaKey } from '@/stores/recaptcha';
 import { useUserStore } from '@/stores/user';
 import axios from 'axios';
@@ -28,6 +29,7 @@ const buttonsData = ref([
 ]);
 
 onMounted(() => {
+    if (DEMO_MODE) return;
 
     // SET ACTIVE BUTTON
     buttonsData.value.forEach(item => {
@@ -54,7 +56,6 @@ onMounted(() => {
 
         if (user.$state.status === 'user') router.push({ name: 'Profile' });
 
-        console.log(res);
     }).catch(function (err) {
         console.log(err);
     });
@@ -62,13 +63,13 @@ onMounted(() => {
 
 // HANDLE ADD RECAPTCHA
 onBeforeMount(() => {
-    if (keyStore.getKey.length !== 0) return;
+    if (DEMO_MODE) return;
+    if (keyStore.getKey() !== '') return;
 
     axios({
         method: "get",
         url: `${import.meta.env.VITE_API_BASE_URL}/getRecaptchaKey`
     }).then(function (res) {
-        console.log(res);
         keyStore.setKey(res.data.key);
 
         const script = document.createElement("script");
@@ -149,7 +150,7 @@ const handleOpenMenu = () => {
                                     class="page-login__nav__text green">quick</span>sms.io</span>
                         </router-link>
                         <div class="page-login__box__el__box__buttons">
-                            <router-link v-for="item in buttonsData" :to="item.link"
+                            <router-link v-if="!DEMO_MODE" v-for="item in buttonsData" :to="item.link"
                                 class="page-login__box__el__box__buttons__el" :class="{ active: item.isActive }">
                                 {{ item.title }}
                             </router-link>

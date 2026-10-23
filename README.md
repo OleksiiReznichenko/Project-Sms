@@ -1,40 +1,51 @@
-# sms
+# Quick SMS - Frontend portfolio demo
 
-This template should help get you started developing with Vue 3 in Vite.
+**Demo:** https://sms-project.pages.dev/
 
-## Recommended IDE Setup
+An archived Vue 3 + TypeScript SMS-service frontend, restored as an interactive admin-interface demo with fictional data. This project originally integrated REST APIs for account management, dashboard analytics, coupons and transactions. The original API implementation remains in the source for reference.
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+## What you can explore
 
-## Type Support for `.vue` Imports in TS
+- One-click **Explore admin demo** entry from the homepage or login screen
+- Dashboard statistics, charts and popular services
+- Users list, client-side search and user details
+- Transaction list, confirmation (fictional) and search
+- Coupon and announcement management using temporary mock data
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
+No real account registration, authentication, SMS delivery, purchases, money transfers, or password changes work in the demo. The original FAQ/customer account and payment routes are disabled for public visitors. All modifications are in browser memory and reset on refresh. Never enter real credentials or personal information.
 
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
+## Run locally
 
-1. Disable the built-in TypeScript Extension
-    1) Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-    2) Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
-
-```sh
+```bash
 npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
 npm run dev
 ```
 
-### Type-Check, Compile and Minify for Production
+The site defaults to demo mode even without an `.env` file. The demo API intercepts existing Axios requests inside the browser. Unsupported requests return an explanatory demo error rather than contacting an external service.
 
-```sh
+## Build
+
+```bash
 npm run build
 ```
+
+## Integration preservation
+
+The original API calls and login components are intentionally preserved behind `VITE_DEMO_MODE=false`. Only enable that flag privately if you control a compatible backend. Never store secrets in any `VITE_` variable: Vite publishes such values in client bundles. The public deployment should leave `VITE_DEMO_MODE=true`.
+
+## Code structure
+
+- `src/demo/` - fictional seed records and Axios demo adapter
+- `src/pages/AdminPanel/` - original admin screens
+- `src/stores/` - Pinia state
+- `src/router/index.ts` - public demo route guard
+
+This is restored historical client frontend work, not a functioning SMS platform.
+
+## Notes and limitations
+
+- The original marketing landing page remains, including historical descriptions of services. The demo banner and admin CTA explain the current status.
+- Existing admin CRUD controls operate on **fictional temporary records** only. They reset after a refresh.
+- The original production authorization and server-side security are NOT part of this demo. The route guard is for user experience, not security.
+- A full browser/mobile regression test is still recommended.
+- Remove or rotate any credentials from the historical `.env` file in your local working copy; it is not bundled here.

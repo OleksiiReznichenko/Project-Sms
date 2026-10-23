@@ -21,7 +21,6 @@ const getNotifications = async () => {
         withCredentials: true,
     }).then(function (res) {
         notifications.setNotifications(res.data.notifications);
-        console.log(res);
     }).catch(function (err) {
         console.log(err);
     });
@@ -45,7 +44,6 @@ const handleDeleteNotification = (id: string) => {
         },
         withCredentials: true
     }).then(function (res) {
-        console.log(res);
     }).catch(function (err) {
         console.log(err);
     });

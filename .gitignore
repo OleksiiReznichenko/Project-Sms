@@ -28,3 +28,7 @@ coverage
 *.sw?
 
 yarn.lock
+# Never commit environment files containing legacy API tokens
+.env
+.env.*
+!.env.example

@@ -30,7 +30,6 @@ const selectDiscountType = (type: '%' | '$'): void => {
 };
 
 const addCoupon = (): void => {
-    console.log(nameInputValue.value, discountInputValue.value, limitInputValue.value, discountType.value);
     if (!nameInputValue.value || !discountInputValue.value || !limitInputValue.value) return;
     axios({
         method: "post",
@@ -113,7 +112,6 @@ const getCoupons = (): void => {
         // },
         withCredentials: true
     }).then(function (res) {
-        // console.log('COUPONS', res);
         if (res.data.coupons) {
             adminCouponsStore.setCoupons(res.data.coupons)  
             isLoaded.value = true;

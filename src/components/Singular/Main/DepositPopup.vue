@@ -35,8 +35,6 @@ const handleDeposit = () => {
         },
         withCredentials: true
     }).then(function (res) {
-        console.log(res);
-
         // HANDLE REDIRECT
         window.location.href = res.data.payment;
     }).catch(function (err) {

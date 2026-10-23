@@ -23,8 +23,6 @@ const getTransactions = (): void => {
         // },
         withCredentials: true
     }).then(function (res) {
-        // console.log('transactions', res);
-
         if (res.data.transactions) {
             adminTransactionsStore.setTransactions(res.data.transactions);
             isLoaded.value = true;
@@ -45,7 +43,6 @@ const search = (): void => {
     }).then(function (res) {
 
         if (res.data.data) {
-            // console.log('SEARCH', res.data.data);
             adminTransactionsStore.setTransactions(res.data.data);
         }
     }).catch(function (err) {

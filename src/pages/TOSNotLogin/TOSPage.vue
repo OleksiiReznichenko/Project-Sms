@@ -27,7 +27,6 @@ onMounted(() => {
             router.push({ name: 'TOS' });
             return;
         }
-        console.log(res);
     }).catch(function (err) {
         console.log(err);
     });

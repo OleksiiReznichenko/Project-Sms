@@ -92,15 +92,12 @@ onMounted(() => {
 
         // HANDLE REDIRECT IF NOT LOGGED
         if (res.data.account.status !== 'user') {
-            console.log('lox')
             router.push({ name: 'home' });
         }
 
         // SET DATA IN STORES
         user.setUser(res.data.account);
         notifications.setNotifications(res.data.account.notifications);
-
-        console.log(res);
     }).catch(function (err) {
         console.log(err);
     });

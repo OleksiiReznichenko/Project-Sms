@@ -53,7 +53,6 @@ const deleteAnnouncement = (): void => {
         },
         withCredentials: true
     }).then(function (res) {
-        // console.log(res);
         if (res.data.error) {
             notifyError(res.data.message);
             return;
@@ -104,9 +103,6 @@ const editAnnouncement = (): void => {
         // },
         withCredentials: true
     }).then(function (res) {
-        console.log(res);
-        // console.log('popupImage', popupImage.value);
-
         if (res.data.error) {
             notifyError(res.data.message);
             return;
@@ -196,7 +192,6 @@ const timer = (): void => {
         timerSubtitle.value = 'Finished';
     }
 
-    // console.log(props.id, 'timerTime', timerTime, props.start, props.end);
 
     if (timerTime > 0) {
         // if (+secondsTimer.value >= 60)  {

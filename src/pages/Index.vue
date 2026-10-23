@@ -2,6 +2,7 @@
 import { onMounted, onUnmounted, ref } from 'vue';
 import { gsap, Back } from 'gsap';
 import axios from 'axios';
+import { DEMO_MODE } from '@/demo/config';
 import { useBaseStore } from '@/stores/index';
 import { useUserStore } from '@/stores/user';
 import AppNav from '@/components/Singular/App/Nav.vue';
@@ -23,6 +24,7 @@ const additionalLink = ref('');
 const user = useUserStore();
 
 const userChecker = () => {
+    if (DEMO_MODE) return;
     axios({
         method: "get",
         url: `${import.meta.env.VITE_API_BASE_URL}/getAccount`,
@@ -34,7 +36,6 @@ const userChecker = () => {
         if (res.data.account.status === 'user') additionalLink.value = '/main';
         else additionalLink.value = '';
         user.setUser(res.data.account);
-        console.log(res);
     }).catch(function (err) {
         console.log(err);
     });

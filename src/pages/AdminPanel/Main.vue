@@ -50,8 +50,6 @@ onMounted(() => {
         // }
         withCredentials: true
     }).then(function (res) {
-      //  console.log(res);
-
         if (res.data.products) {
             popularProductsStore.setPopularProducts(res.data.products);
         }

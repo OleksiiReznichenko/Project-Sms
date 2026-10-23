@@ -32,7 +32,6 @@ const inputStartDate = ref<HTMLInputElement | null>(null);
 const inputEndDate = ref<HTMLInputElement | null>(null);
 
 const addAnnouncement = (): void => {
-    // console.log(nameInputValue.value, discountInputValue.value, limitInputValue.value, discountType.value);
     if (!currentTitle.value || !currentDescription.value || 
     !currentStartDate.value || !currentEndDate.value) return;
 
@@ -49,7 +48,6 @@ const addAnnouncement = (): void => {
         form.append("preview", selectedFile.value);
     }
 
-    console.log(form.get('id'), form.get('data'), form.get('preview'))
     axios({
         method: "post",
         url: `${import.meta.env.VITE_API_BASE_URL}/addAnnouncement`,
@@ -59,7 +57,6 @@ const addAnnouncement = (): void => {
         // },
         withCredentials: true
     }).then(function (res) {
-        // console.log(res);
         if (res.data.error) {
             notifyError(res.data.message);
             return;
@@ -98,7 +95,6 @@ const getAnnouncements = (): void => {
         // },
         withCredentials: true
     }).then(function (res) {
-        // console.log('ANNOUNCEMENTS', res);
         if (res.data.announcements) {
             adminAnnouncementsStore.setAnnouncements(res.data.announcements)  
             isLoaded.value = true;
@@ -169,7 +165,6 @@ fileReader.onload = (event: Event) => {
 const triggerAddFileSelection = (event: Event) => {
     event.preventDefault();
     addImageInput.value?.click();
-    // console.log('CLICK', addImageInput.value)
 };
 
 // // EVENT IF FILE IS SELECTED

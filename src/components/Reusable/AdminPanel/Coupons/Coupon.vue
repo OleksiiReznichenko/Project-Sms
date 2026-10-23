@@ -47,7 +47,6 @@ const deleteCoupon = (): void => {
         },
         withCredentials: true
     }).then(function (res) {
-        // console.log(res);
         if (res.data.error) {
             notifyError(res.data.message);
             return;
@@ -81,7 +80,6 @@ const editCoupon = (): void => {
         },
         withCredentials: true
     }).then(function (res) {
-        // console.log('EDIT COUPON', res);
         
         if (res.data.error) {
             notifyError(res.data.message);

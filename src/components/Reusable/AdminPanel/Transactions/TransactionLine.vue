@@ -78,7 +78,6 @@ const confirmTransaction = (): void => {
         },
         withCredentials: true
     }).then(function (res) {
-        console.log(res);
         if (res.data.error) {
             notifyError(res.data.message);
             return;

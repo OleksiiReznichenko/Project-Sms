@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { inject, onMounted, ref } from 'vue';
+import { DEMO_MODE } from '@/demo/config';
 import { storeToRefs } from 'pinia';
 import axios from 'axios';
 import { useAdminUsers } from '@/stores/AdminPanel/adminUsers';
@@ -131,13 +132,16 @@ onMounted(() => {
                     <img src="@/assets/svg/AdminPanel/cross.svg" alt="" class="cross">
                 </button>
                 <div class="info">
-                    <h3 class="title">Create account</h3>
+                    <h3 class="title">{{ DEMO_MODE ? "Create sample user" : "Create account" }}</h3>
+                    <p v-if="DEMO_MODE" class="demo-description">
+                        Only use fictional details. Changes reset when you refresh.
+                    </p>
                     <form @submit.prevent class="form">
                         <div class="input-container">
                             <span class="subtitle">Email</span>
                             <input v-model="createAccountEmail" type="email" class="input">
                         </div>
-                        <div class="input-container">
+                        <div v-if="!DEMO_MODE" class="input-container">
                             <span class="subtitle">Password</span>
                             <input v-model="createAccountPassword" type="text" class="input">
                         </div>
@@ -217,6 +221,13 @@ onMounted(() => {
                     font-size: 5.6rem;
                     line-height: 1;
                     margin-bottom: 3.2rem;
+                }
+
+                .demo-description {
+                    margin-bottom: 1.2rem;
+                    color: var(--color-grey-2);
+                    font-size: 1.4rem;
+                    line-height: 1.5;
                 }
 
                 .form {

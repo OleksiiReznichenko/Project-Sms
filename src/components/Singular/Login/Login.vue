@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { inject, ref, type Ref } from 'vue';
+import { DEMO_MODE } from '@/demo/config';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
 import { useRecaptchaKey } from '@/stores/recaptcha';
@@ -8,8 +9,8 @@ const notifyError = inject<any>('notifyError');
 const router = useRouter();
 
 // DATA VARIABLES
-const email = ref();
-const password = ref();
+const email = ref('');
+const password = ref('');
 
 // VALIDATION VARIABLES
 const isPasswordCorrect = ref(true);
@@ -162,6 +163,22 @@ const handleGoPassword = () => {
 
 <template>
     <div class="login">
+        <div v-if="DEMO_MODE" class="login__demo">
+            <h2 class="login__demo__title">Explore Quick SMS</h2>
+            <p class="login__demo__description">
+                This is an archived frontend demo. All accounts, transactions and statistics
+                are fictional. SMS sending and payments are disabled.
+            </p>
+            <div class="login__demo__actions">
+                <router-link to="/adminPanel/main" class="login__demo__button">
+                    Explore admin demo →
+                </router-link>
+                <router-link to="/" class="login__demo__back-link">
+                    Back to homepage
+                </router-link>
+            </div>
+        </div>
+        <template v-else>
         <div @click="e => handleFocus(e)" :class="!isEmailCorrect ? 'error' : ''" class="login__input-box first">
             <img src="@/assets/svg/Login/email.svg" alt="" class="login__input-box__img">
             <div class="input-container">
@@ -192,6 +209,7 @@ const handleGoPassword = () => {
                 <button @click="handleLoginViaTelegram" class="login__social__el__text">telegram</button>
             </button>
         </div>
+        </template>
     </div>
 </template>
 
@@ -201,6 +219,116 @@ const handleGoPassword = () => {
     display: flex;
     flex-direction: column;
     width: 100%;
+
+    &__demo {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.8rem;
+        width: 100%;
+        min-width: 0;
+        padding: 3rem 0;
+
+        &__title {
+            font-family: 'Bison';
+            font-weight: 700;
+            font-size: clamp(3.6rem, 4vw, 5rem);
+            line-height: 1.1;
+            color: var(--color-white);
+        }
+
+        &__description {
+            max-width: 44rem;
+            font-family: 'Rubik';
+            font-size: 1.6rem;
+            line-height: 1.6;
+            color: var(--color-grey-2);
+            overflow-wrap: break-word;
+        }
+
+        &__actions {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem 2.4rem;
+            width: 100%;
+            margin-top: .6rem;
+        }
+
+        &__button {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            max-width: 100%;
+            padding: 1.4rem 2.2rem;
+            border-radius: .6rem;
+            background-color: var(--color-green-light);
+            color: var(--color-black);
+            font-family: 'Rubik';
+            font-weight: 700;
+            font-size: 1.6rem;
+            line-height: 1.3;
+            text-align: center;
+            text-decoration: none;
+            transition: opacity .2s ease;
+
+            &:hover {
+                opacity: .85;
+            }
+
+            &:focus-visible {
+                outline: .2rem solid var(--color-white);
+                outline-offset: .3rem;
+            }
+        }
+
+        &__back-link {
+            font-family: 'Rubik';
+            font-size: 1.5rem;
+            line-height: 1.4;
+            color: var(--color-green-light);
+            text-decoration: none;
+
+            &:hover {
+                text-decoration: underline;
+            }
+
+            &:focus-visible {
+                outline: .2rem solid var(--color-green-light);
+                outline-offset: .3rem;
+            }
+        }
+
+        @media only screen and (max-width: 850px) {
+            gap: 2rem;
+            padding: 2.5rem 0;
+
+            &__title {
+                font-size: clamp(3.8rem, 9vw, 5.5rem);
+            }
+
+            &__description {
+                font-size: clamp(1.6rem, 3.8vw, 1.9rem);
+            }
+
+            &__button {
+                font-size: clamp(1.6rem, 3.8vw, 1.9rem);
+                padding: 1.5rem 2.2rem;
+            }
+
+            &__back-link {
+                font-size: clamp(1.5rem, 3.5vw, 1.8rem);
+            }
+        }
+
+        @media only screen and (max-width: 450px) {
+            &__actions {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 2rem;
+            }
+        }
+    }
 
     .input-container {
         width: 100%;

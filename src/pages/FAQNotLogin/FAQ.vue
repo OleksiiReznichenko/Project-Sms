@@ -7,9 +7,16 @@ import NavMenu from '@/components/Singular/App/NavMenu.vue';
 import Question from '@/components/Reusable/Main/FAQ/Question.vue';
 import FAQFooter from '@/components/Singular/Main/FAQFooter.vue';
 import { useSlideFunctionsStore } from '@/stores/slideFunctions';
+import { DEMO_MODE } from '@/demo/config';
+import AppFooter from '@/components/Singular/App/Footer.vue';
 
 // FAQ DATA
-const data = ref([
+const data = ref(DEMO_MODE ? [
+    { id: 1, question: 'Is Quick SMS still an active service?', answer: 'No. This website is an archived frontend demo. SMS delivery, payments and account registration are disabled.', isActive: false },
+    { id: 2, question: 'Can I browse the available services?', answer: 'Yes. The Services page shows fictional sample entries so you can explore the interface. The displayed entries are not available for purchase.', isActive: false },
+    { id: 3, question: 'Can I try the admin dashboard?', answer: 'Yes. Click Explore admin demo to browse sample statistics, users, transactions, coupons and announcements. Changes are temporary.', isActive: false },
+    { id: 4, question: 'Does the website connect to the original backend?', answer: 'No. In public demo mode, API requests are handled locally with fictional data. No real SMS messages or financial transactions occur.', isActive: false },
+] : [
     {
         id: 1,
         question: 'Do you have toll-free numbers?',
@@ -39,6 +46,8 @@ const data = ref([
 const router = useRouter();
 
 onMounted(() => {
+    if (DEMO_MODE) return;
+
     // REDIRECT IF LOGGED IN
     axios({
         method: "get",
@@ -103,7 +112,8 @@ const slideToggle = (e: Event, duration = 500): void => {
                 <Question v-for="item in data" :item="item" />
             </div>
         </div>
-        <FAQFooter />
+        <AppFooter v-if="DEMO_MODE" />
+        <FAQFooter v-else />
     </div>
 </template>
 

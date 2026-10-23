@@ -24,7 +24,6 @@ const handleLogout = () => {
         withCredentials: true
     }).then(function (res) {
         user.logout();
-        //  console.log(res);
     }).catch(function (err) {
         console.log(err);
     });

@@ -60,8 +60,6 @@ const setLabelsAndDate = (chartInfo: ChartInfo): void => {
     const minValue = Math.min(...chartInfo.data);
     const stepsAmount = 6;
 
-    // console.log('STEPSAMOUNT', stepsAmount, minValue, maxValue, Math.floor((maxValue - minValue) / stepsAmount));
-    
     chart.options.scales.y.min = minValue;
     chart.options.scales.y.max = maxValue;
     chart.options.scales.y.ticks.stepSize = Math.floor((maxValue - minValue) / stepsAmount);

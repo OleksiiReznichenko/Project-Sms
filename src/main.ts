@@ -11,6 +11,10 @@ import notify from "./plugins/notify.js";
 gsap.registerPlugin(ScrollTrigger);
 
 import './assets/css/base.css'
+import { DEMO_MODE } from './demo/config';
+import { installDemoApi } from './demo/mockApi';
+
+if (DEMO_MODE) installDemoApi();
 
 const app = createApp(App)
 

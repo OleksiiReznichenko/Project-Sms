@@ -34,7 +34,6 @@ const signout = (): void => {
         // },
         withCredentials: true
     }).then(function (res) {
-        // console.log(res);
         router.push('/');
     }).catch(function (err) {
         console.log(err);
@@ -58,7 +57,6 @@ onBeforeMount(() => {
             return;
         }
         // if(user.$state.status !== 'admin') router.push({ name: 'home' });
-        console.log(res);
     }).catch(function (err) {
         console.log(err);
     });

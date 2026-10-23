@@ -97,7 +97,6 @@ onMounted(async () => {
         // }
         withCredentials: true
     }).then(function (res) {
-        console.log(res);
         // SET ORDERS
         orders.value = res.data.orders.filter(item => item.error !== true);
 
@@ -200,8 +199,6 @@ async function onTick(orderId: string): Promise<void> {
             withCredentials: true
         });
 
-        console.log(response);
-
         // IF ISN`T ERROR SET SMS
         if (response.error !== true) {
             return response.data;
@@ -257,8 +254,6 @@ watch(route, (newValue) => {
                 // },
                 withCredentials: true
             }).then(function (res) {
-                console.log(res);
-
                 // IF NEW SMS RECIVED
                 if (res.data !== null && res.data.message !== "pending") {
 
@@ -306,7 +301,6 @@ const handleResendCode = () => {
         withCredentials: true
     }).then(function (res) {
         startCountdown(onTick);
-        console.log(res);
     }).catch(function (err) {
         console.log(err);
     });

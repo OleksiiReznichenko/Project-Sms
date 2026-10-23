@@ -76,7 +76,6 @@ onMounted(() => {
         // }
         withCredentials: true
     }).then(function (res) {
-        console.log(res);
         isCountriesLoaded.value = true;
         countries.value = res.data.countries;
 
@@ -95,7 +94,6 @@ onMounted(() => {
         // }
         withCredentials: true
     }).then(function (res) {
-        console.log(res);
         isServicesLoaded.value = true;
         services.value = res.data.services;
 
@@ -124,7 +122,6 @@ onMounted(() => {
             },
             withCredentials: true
         }).then(function (res) {
-            console.log(res);
             amountLoadingRequstCount.value--;
             amount.value = res.data.origin;
         }).catch(function (err) {
@@ -203,7 +200,6 @@ watch(countryFilter, (newValue) => {
         // }
         withCredentials: true
     }).then(function (res) {
-        console.log(res);
         services.value = res.data.services;
         isServicesLoaded.value = true;
 
@@ -303,7 +299,6 @@ const processQueue = async () => {
         try {
             // HANDLE GET PRICE OF NEW ITEM IN CART
             const res = await axios(request);
-            console.log(res);
 
             // SET PRICE OF NEW ITEM IN CART
             cart.setPrice(data.country, data.service, parseFloat(res.data.price));

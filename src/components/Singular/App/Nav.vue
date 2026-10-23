@@ -2,6 +2,7 @@
 import { onBeforeMount, onMounted, ref } from 'vue';
 import { useBaseStore } from '@/stores/index';
 import { useUserStore } from '@/stores/user';
+import { DEMO_MODE } from '@/demo/config';
 import DepositPopup from '../Main/DepositPopup.vue';
 import BurgerMenu from '@/components/Reusable/BurgerMenu.vue';
 
@@ -89,15 +90,15 @@ onBeforeMount(() => {
                     <router-link :to="`${additionalLink || ''}/FAQ`" class="link">How does it work?</router-link>
                 </li>
                 <li class="item">
-                    <router-link :to="`${additionalLink || ''}/services`" class="link">Get number</router-link>
+                    <router-link :to="`${additionalLink || ''}/services`" class="link">{{ DEMO_MODE ? 'Browse services' : 'Get number' }}</router-link>
                 </li>
             </ul>
             <router-link :to="`${additionalLink || ''}/FAQ`" class="link mobile">how does it work?</router-link>
-            <router-link :to="`${additionalLink || ''}/services`" class="link mobile">GET NUMBER</router-link>
+            <router-link :to="`${additionalLink || ''}/services`" class="link mobile">{{ DEMO_MODE ? 'SERVICES' : 'GET NUMBER' }}</router-link>
             <router-link v-if="user.$state.status === 'admin'" to="/adminPanel/main"
                 class="btn-green button-registration">Admin panel</router-link>
-            <router-link v-else-if="user.$state.status !== 'user'" to="/registration"
-                class="btn-green button-registration">sign in</router-link>
+            <router-link v-else-if="user.$state.status !== 'user'" :to="DEMO_MODE ? '/login' : '/registration'"
+                class="btn-green button-registration">{{ DEMO_MODE ? 'Explore demo' : 'sign in' }}</router-link>
             <router-link v-else to="/" class="logo-link-right mobile">
                 <svg width="24" height="15" viewBox="0 0 24 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path

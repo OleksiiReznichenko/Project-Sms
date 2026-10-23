@@ -10,7 +10,6 @@ const onResize = (): void => {
     } else {
         isArrowSmall.value = false;
     }
-    console.log(isArrowSmall.value);
 };
 
 onMounted(() => {
@@ -18,7 +17,6 @@ onMounted(() => {
         isArrowSmall.value = true;
     }
   
-    console.log(isArrowSmall.value);
     // ADD WINDOW EVENT LISTENER
     window.addEventListener('resize', onResize);
 })

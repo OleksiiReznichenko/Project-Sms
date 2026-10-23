@@ -105,7 +105,6 @@ onMounted(() => {
 
         // SET LOADER VARIABLE TO TRUE
         isOrdersLoaded.value = true;
-        console.log(res);
     }).catch(function (err) {
         console.log(err);
     });
@@ -125,7 +124,6 @@ onMounted(() => {
 
         // SET LOADER VARIABLE TO TRUE
         isBannerLoaded.value = true;
-        console.log(res);
     }).catch(function (err) {
         console.log(err);
     });
@@ -192,8 +190,6 @@ const handleCreateReferral = () => {
         },
         withCredentials: true
     }).then(function (res) {
-        console.log(res);
-
         // USERS INFO UPD
         if (res.data.message === "Referral successfully created.") {
             axios({
@@ -205,7 +201,6 @@ const handleCreateReferral = () => {
                 withCredentials: true
             }).then(function (res) {
                 user.setUser(res.data.account);
-                console.log(res);
             }).catch(function (err) {
                 console.log(err);
             });
@@ -245,7 +240,6 @@ const handleChange2FA = (e: Event) => {
         },
         withCredentials: true
     }).then(function (res) {
-        console.log(res);
     }).catch(function (err) {
         console.log(err);
     });
@@ -345,7 +339,6 @@ const handleEndSession = (id: string) => {
             "id": id
         }),
     }).then(function (res) {
-        console.log(res);
     }).catch(function (err) {
         console.log(err);
     });

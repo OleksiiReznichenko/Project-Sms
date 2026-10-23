@@ -34,7 +34,6 @@ const handleRecover = () => {
             "Content-Type": "application/json"
         }
     }).then(function (res) {
-        console.log(res);
 
         // HANDLE REDIRECT
         if (res.data.message === "Password changed successfully") router.push({ name: 'login' });
