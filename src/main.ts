@@ -22,5 +22,4 @@ app.use(createPinia())
 app.use(router)
 app.use(notify);
 
-app.config.compilerOptions.isCustomElement = tag => tag.startsWith('vue-cal');
 app.mount('#app')

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, watch } from 'vue';
+import { nextTick, onUnmounted, ref, watch } from 'vue';
 import { gsap, Power1 } from 'gsap';
 import { storeToRefs } from 'pinia';
 import { useBaseStore } from '@/stores';
@@ -9,27 +9,54 @@ const props = defineProps(["additionalLink"]);
 const baseStore = useBaseStore();
 const { startLandingCountriesAnimation } = storeToRefs(baseStore);
 
-const linesAnimation = (): void => {
-    const baseFontSizeString = getComputedStyle(document.querySelector('html')!).fontSize;
-    const baseFontSize = +baseFontSizeString.substring(0, baseFontSizeString.length - 2);
-    let vw = window.innerWidth / 100;
-    let vh = window.innerHeight / 100;
+const countriesContainer = ref<HTMLElement | null>(null);
+const countryTweens: gsap.core.Tween[] = [];
+let animationVersion = 0;
 
-    gsap.to('.countries-line.to-left', {duration: 40, repeat: -1, yoyo: true, ease: Power1.easeInOut, x: -230 * baseFontSize})
-    gsap.from('.countries-line.to-right', {duration: 40, repeat: -1, yoyo: true, ease: Power1.easeInOut, x: -240 * baseFontSize})
+const stopLinesAnimation = (): void => {
+    countryTweens.forEach(tween => tween.kill());
+    countryTweens.length = 0;
 };
 
-watch(startLandingCountriesAnimation, (newValue) => {
-    if (startLandingCountriesAnimation.value) {
-        setTimeout(() => {
-            linesAnimation();
-        }, 1000)
-    }
-})
+watch(startLandingCountriesAnimation, async (visible) => {
+    const version = ++animationVersion;
+    stopLinesAnimation();
 
-onMounted(() => {
-    linesAnimation();
-})
+    if (!visible) return;
+
+    // The .countries container uses v-if; wait for Vue to insert it.
+    await nextTick();
+    if (version !== animationVersion || !countriesContainer.value) return;
+
+    const baseFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
+    const leftLines = countriesContainer.value.querySelectorAll<HTMLElement>('.countries-line.to-left');
+    const rightLines = countriesContainer.value.querySelectorAll<HTMLElement>('.countries-line.to-right');
+
+    if (leftLines.length) {
+        countryTweens.push(gsap.to(leftLines, {
+            duration: 40,
+            repeat: -1,
+            yoyo: true,
+            ease: Power1.easeInOut,
+            x: -230 * baseFontSize
+        }));
+    }
+
+    if (rightLines.length) {
+        countryTweens.push(gsap.from(rightLines, {
+            duration: 40,
+            repeat: -1,
+            yoyo: true,
+            ease: Power1.easeInOut,
+            x: -240 * baseFontSize
+        }));
+    }
+}, { immediate: true, flush: 'post' });
+
+onUnmounted(() => {
+    ++animationVersion;
+    stopLinesAnimation();
+});
 </script>
 
 <template>
@@ -45,7 +72,7 @@ onMounted(() => {
             </h1>
             <router-link :to="`${props.additionalLink || ''}/services`" class="btn-green button-buy">Buy a number</router-link>
         </div>
-        <div v-if="startLandingCountriesAnimation" class="countries">
+        <div v-if="startLandingCountriesAnimation" ref="countriesContainer" class="countries">
             <div class="countries-line to-left">
                 <div class="country">
                     <img src="@/assets/img/Landing/countries/australia.png" alt="" class="flag">
